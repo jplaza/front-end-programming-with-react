@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
 
@@ -11,43 +10,53 @@ const data = [
   { category: "Vegetables", price: "$1", stocked: true, name: "Peas" }
 ]
 
-function App() {
-  const [inputValue, setValue] = useState("");
+function Logo() {
+  return <div className='Logo' />
+}
 
-  function handleChange(event) {
-    setValue(event.target.value)
-  }
+function App() {
+  const [filterText, setFilterText] = useState('');
+  const [inStockOnly, setInStockOnly] = useState(false);
+
+  const shouldIncludeProduct = prod => (
+    prod.name.toLowerCase().includes(filterText.toLowerCase())
+    && (inStockOnly ? prod.stocked : true)
+  )
+  const products = data.filter(shouldIncludeProduct)
 
   return (
-    <div className="App">
-      <StatefulComponents
-        onInputChange={handleChange}
-        value={inputValue} />
-      {/* <SearchBar />
-      <ProductTable products={data} /> */}
+    <div className="AppContainer">
+      <Logo />
+      <div className="App">
+        <SearchBar
+          filterText={filterText}
+          inStockOnly={inStockOnly}
+          onFilterTextChange={setFilterText}
+          onInStockOnlyChange={setInStockOnly} />
+        <ProductTable products={products} />
+      </div>
     </div>
   );
 }
 
-function StatefulComponents({onInputChange, value}) {  
-
-  return (
-    <div>      
-      <input
-        value={value}
-        onChange={onInputChange} />
-    </div>
-  )
-}
-
-function SearchBar() {
+function SearchBar({
+  filterText,
+  inStockOnly,
+  onFilterTextChange,
+  onInStockOnlyChange
+}) {
   return (
     <div className='search-bar'>
       <div>
-        <input type="text" placeholder='Search...' />
+        <input type="text" placeholder='Search...'
+          value={filterText}
+          onChange={(e) => onFilterTextChange(e.target.value)} />
       </div>
       <div>
-        <input type="checkbox" />
+        <input
+          type="checkbox"
+          checked={inStockOnly}
+          onChange={(e) => onInStockOnlyChange(e.target.checked)} />
         <label>Only show product in stock</label>
       </div>
     </div>
@@ -80,7 +89,7 @@ function ProductTable({products}) {
       <thead>
         <tr>
           <th>Name</th>
-          <th>Price</th>
+          <th className='number-cell'>Price</th>
         </tr>
       </thead>
       <tbody>{rows}</tbody>
@@ -98,11 +107,14 @@ function ProductCategoryRow({ category }) {
   );
 }
 
-function ProductTableRow({name, price}) {
+function ProductTableRow({name, price, stocked}) {
+  const style = {
+    color: stocked?'inherit':'red'
+  }
   return (
     <tr>
-      <td>{name}</td>
-      <td>{price}</td>
+      <td><span style={style}>{name}</span></td>
+      <td class="number-cell">{price}</td>
     </tr>
   );
 }
