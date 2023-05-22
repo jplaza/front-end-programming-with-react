@@ -1,4 +1,4 @@
-export const initialState = [];
+const initialState = [];
 
 export function tasksReducer(tasks, action) {
   switch (action.type) {

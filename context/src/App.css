@@ -1,0 +1,14 @@
+body {
+  padding: 2rem 4rem;
+}
+
+.section {
+  padding: 0 1rem;
+  border: 1px solid gray;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+
+#root {
+  max-width: 640px;
+}
